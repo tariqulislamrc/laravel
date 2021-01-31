@@ -6,24 +6,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Services\Auth\AuthServices;
+use App\Services\Auth\AuthService;
+use App\Services\Config\ConfigServices;
 
 class AuthController extends Controller
 {
-    private $service, $request;
+    private $service, $request, $config;
     /**
      * Create a new AuthController instance.
      *
      * @return void
      */
     public function __construct(
-        AuthServices $service,
-        Request $request
+        AuthService $service,
+        Request $request,
+        ConfigServices $config
         )
     {
         $this->middleware('auth:api', ['except' => ['login']]);
         $this->service = $service;
         $this->request = $request;
+        $this->config = $config;
 
     }
 
@@ -36,15 +39,23 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $this->service->authenticate($request->all());
 
-        $credentials = $request->only('email_or_password', 'password');
+        $auth = $this->service->auth($this->request->all());
+        $auth_user = $auth['auth_user'];
+        $token = $auth['token'];
+        $auth_user->user_roles = $auth_user->roles()->pluck('name')->all();
+        $auth_user->user_permissions = $auth_user->getAllPermissions()->pluck('name')->all();
 
-        if ($token = $this->guard()->attempt($credentials)) {
-            return $this->respondWithToken($token);
-        }
+        $config = $this->config->getConfig();
 
-        return response()->json(['error' => 'Unauthorized'], 401);
+        activity('login')->log('login');
+
+        return $this->success([
+            'message' => 'You are successfully logged in.',
+            'token' => $token,
+            'user' => $auth_user,
+            'config' => $config
+        ]);
     }
 
     /**

@@ -27,3 +27,5 @@ Route::group([
     Route::post('me', 'AuthController@me');
 
 });
+
+Route::get('/config', [App\Http\Controllers\Config\ConfigController::class, 'config']);
