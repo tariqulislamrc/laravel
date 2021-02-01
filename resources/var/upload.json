@@ -1,0 +1,8 @@
+{
+	"article" : {
+		"auth_required" : 0,
+		"max_file_size" : 2,
+		"allowed_file_extensions" : ["jpg","png","jpeg"],
+		"max_no_of_files" : 10
+	}
+}

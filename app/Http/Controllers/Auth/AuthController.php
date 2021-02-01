@@ -23,7 +23,7 @@ class AuthController extends Controller
         ConfigServices $config
         )
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'logout']]);
         $this->service = $service;
         $this->request = $request;
         $this->config = $config;

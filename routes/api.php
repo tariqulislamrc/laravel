@@ -29,3 +29,19 @@ Route::group([
 });
 
 Route::get('/config', [App\Http\Controllers\Config\ConfigController::class, 'config']);
+
+Route::group(['middleware' => 'jwt.auth'], function(){
+		// Upload Routes
+	Route::post('/upload', [App\Http\Controllers\Upload\UploadController::class, 'upload']);
+	Route::post('/upload/extension', [App\Http\Controllers\Upload\UploadController::class, 'getAllowedExtension']);
+	Route::post('/upload/image', [App\Http\Controllers\Upload\UploadController::class, 'uploadImage']);
+	Route::post('/upload/fetch', [App\Http\Controllers\Upload\UploadController::class, 'fetch']);
+    Route::post('/upload/{id}', [App\Http\Controllers\Upload\UploadController::class, 'destroy']);
+    
+
+	Route::get('/product', [App\Http\Controllers\Product\ProductController::class, 'index']);
+	Route::get('/product/{uuid}', [App\Http\Controllers\Product\ProductController::class, 'show']);
+	Route::post('/product', [App\Http\Controllers\Product\ProductController::class, 'store']);
+	Route::patch('/product/{uuid}', [App\Http\Controllers\Product\ProductController::class, 'update']);
+	Route::delete('/product/{uuid}', [App\Http\Controllers\Product\ProductController::class, 'destroy']);
+});

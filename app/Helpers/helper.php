@@ -132,3 +132,41 @@ function getEndOfDate($date): string
     return date('Y-m-d', strtotime($date)) . ' 23:59';
 }
 
+function stripInlineStyle($content) {
+	return preg_replace('/(<[^>]+) style=".*?"/i', '$1', $content);
+}
+
+/*
+ *  Used to generate slug from string
+ *  @param
+ *  $string as string
+ *  @return slug
+ */
+
+function createSlug($string) {
+	if (!$string) {
+		return;
+	}
+
+	if (checkUnicode($string)) {
+		$slug = str_replace(' ', '-', $string);
+	} else {
+		$slug = preg_replace('/[^A-Za-z0-9-]+/', '-', strtolower($string));
+	}
+	return $slug;
+}
+
+/*
+ *  Used to whether string contains unicode
+ *  @param
+ *  $string as string
+ *  @return boolean
+ */
+
+function checkUnicode($string) {
+	if (strlen($string) != strlen(utf8_decode($string))) {
+		return true;
+	} else {
+		return false;
+	}
+}

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/{vue?}', function () {
     return view('welcome');
-});
+})->where('vue', '[\/\w\.-]*')->name('home');
+
